@@ -1,0 +1,12 @@
+[project]
+name = "ai-task-manager"
+version = "0.1.0"
+dependencies = [
+    "django>=5.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-django>=4.8",
+]
