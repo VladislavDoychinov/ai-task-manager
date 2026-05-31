@@ -8,12 +8,15 @@
 </head>
 <body class="bg-light">
 
-    <nav class="navbar navbar-dark bg-dark mb-4">
-        <div class="container">
-            <span class="navbar-brand mb-0 h1">AI Task Manager</span>
-            <span class="text-white">User: {{ request.user.username }}</span>
+<nav class="navbar navbar-dark bg-dark mb-4">
+    <div class="container">
+        <span class="navbar-brand mb-0 h1">AI Task Manager</span>
+        <div>
+            <span class="text-white me-3">User: {{ request.user.username }}</span>
+            <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">Logout</a>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <div class="container">
         <div class="row mb-4">
