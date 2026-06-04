@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Task Manager - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">AI Task Manager</a>
+            <div class="d-flex align-items-center">
+                <span class="navbar-text text-white me-3">Welcome, <strong>{{ request.user.username }}</strong>!</span>
+                <a href="/logout/" class="btn btn-outline-danger btn-sm">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4">
+                
+                <div class="card border-info mb-4 shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Gemini AI Assistant</h5>
+                    </div>
+                    <div class="card-body bg-light">
+                        <p class="card-text text-secondary">
+                            {% if ai_recommendation %}
+                                <em>"{{ ai_recommendation }}"</em>
+                            {% else %}
+                                <span class="text-muted">No AI feedback generated yet.</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">Productivity Stats</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center mb-3">
+                            <div class="col-4">
+                                <div class="text-muted small">Total</div>
+                                <h4 class="fw-bold text-dark">{{ analytics.total|default:"0" }}</h4>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-muted small">Pending</div>
+                                <h4 class="fw-bold text-warning">{{ analytics.pending|default:"0" }}</h4>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-muted small">Done</div>
+                                <h4 class="fw-bold text-success">{{ analytics.completed|default:"0" }}</h4>
+                            </div>
+                        </div>
+                        
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-success" role="progressbar" 
+                                style="width: {{ analytics.completion_rate }}%;"
+                                aria-valuenow="{{ analytics.completion_rate }}" 
+                                aria-valuemin="0" 
+                                aria-valuemax="100">
+                                {{ analytics.completion_rate }}%
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">+ Create New Task</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+                            {% for field in form %}
+                                <div class="mb-3">
+                                    <label class="form-label text-secondary small fw-bold">{{ field.label }}</label>
+                                    {{ field }}
+                                    {% if field.errors %}
+                                        <div class="text-danger small mt-1">{{ field.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                            <button type="submit" class="btn btn-primary w-100 mt-2">Add Task</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white py-3">
+                        <h4 class="mb-0 text-dark">Your Task Management Board</h4>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if tasks %}
+                            <div class="list-group list-group-flush">
+                                {% for task in tasks %}
+                                    <div class="list-group-item d-flex justify-content-between align-items-center p-3 
+                                        {% if task.is_completed %}bg-light text-muted
+                                        {% elif task.due_datetime and task.due_datetime < datetime_now %}list-group-item-danger{% endif %}">
+                                        <div>
+                                            <h5 class="mb-1 {% if task.is_completed %}text-decoration-line-through{% endif %}">
+                                                {{ task.title }}
+                                            </h5>
+                                            <p class="mb-1 small text-secondary">{{ task.description|default:"No description provided." }}</p>
+                                            
+                                            {% if task.due_datetime %}
+                                                {% if task.due_datetime < datetime_now and not task.is_completed %}
+                                                    <p class="mb-1 small text-danger fw-bold">
+                                                        Overdue! (Was due: {{ task.due_datetime|date:"M d, Y H:i" }})
+                                                    </p>
+                                                {% else %}
+                                                    <p class="mb-1 small text-muted">
+                                                        Due: {{ task.due_datetime|date:"M d, Y H:i" }}
+                                                    </p>
+                                                {% endif %}
+                                            {% endif %}
+
+                                            <span class="badge bg-secondary me-1">{{ task.category.name|default:"General" }}</span>
+                                            
+                                            {% if task.priority == 'H' %}
+                                                <span class="badge bg-danger">High Priority</span>
+                                            {% elif task.priority == 'M' %}
+                                                <span class="badge bg-warning text-dark">Medium Priority</span>
+                                            {% else %}
+                                                <span class="badge bg-success">Low Priority</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <a href="toggle/{{ task.id }}/" class="btn btn-sm {% if task.is_completed %}btn-outline-secondary{% else %}btn-success{% endif %}">
+                                                {% if task.is_completed %}Undo{% else %}Complete{% endif %}
+                                            </a>
+                                            <a href="delete/{{ task.id }}/" class="btn btn-sm btn-danger" onclick="return confirm('Delete this task?')">Delete</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <h5 class="text-muted">No tasks found. Create your first task to get started!</h5>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
