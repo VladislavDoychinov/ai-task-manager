@@ -29,7 +29,7 @@
 
 ### 1. Клониране на хранилището
 ```bash
-git clone [https://github.com/VladislavDoychinov/ai-task-manager.git](https://github.com/VladislavDoychinov/ai-task-manager.git)
+git clone http://github.com/VladislavDoychinov/ai-task-manager"
 ```
 ### 2. Отваряне на папката на проекта
 ```bash
@@ -51,7 +51,7 @@ source venv/bin/activate
 ```bash
 pip install django google-genai python-dotenv
 ```
-⚠️ **Важно преди стартиране:** > Проектът използва относителни импорти между папките. За да избегнете грешката `ModuleNotFoundError`, е необходимо да укажете на Python да търси модули в коренната папка на проекта.
+⚠️ **Важно преди стартиране:** Проектът използва относителни импорти между папките. За да избегнете грешката `ModuleNotFoundError`, е необходимо да укажете на Python да търси модули в коренната папка на проекта.
 За Windows:
 ```bash
 set PYTHONPATH=.
@@ -61,7 +61,7 @@ set PYTHONPATH=.
 export PYTHONPATH=.
 ```
 ### 4. Създаване на .env
-⚠️ **Важно преди стартиране:** > Създайте файл с име .env в папка src/ на проекта и добавете вашия API ключ от Google AI Studio:
+⚠️ **Важно преди стартиране:** Създайте файл с име .env в папка src/ на проекта и добавете вашия API ключ от Google AI Studio:
 - Забележка: Файлът .env се игнорира от Git от съображения за сигурност.
 ```bash
 GEMINI_API_KEY=вашият_таен_gemini_api_ключ_тук
