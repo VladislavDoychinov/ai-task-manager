@@ -51,9 +51,7 @@ source venv/bin/activate
 ```bash
 pip install django google-genai python-dotenv
 ```
-```markdown
 ⚠️ **Важно преди стартиране:** > Проектът използва относителни импорти между папките. За да избегнете грешката `ModuleNotFoundError`, е необходимо да укажете на Python да търси модули в коренната папка на проекта.
-```
 За Windows:
 ```bash
 set PYTHONPATH=.
@@ -63,10 +61,8 @@ set PYTHONPATH=.
 export PYTHONPATH=.
 ```
 ### 4. Създаване на .env
-```markdown
 ⚠️ **Важно преди стартиране:** > Създайте файл с име .env в папка src/ на проекта и добавете вашия API ключ от Google AI Studio:
 - Забележка: Файлът .env се игнорира от Git от съображения за сигурност.
-```
 ```bash
 GEMINI_API_KEY=вашият_таен_gemini_api_ключ_тук
 ```
